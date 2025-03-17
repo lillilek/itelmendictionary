@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ительменский словарь</title>
+    <script src="./assets/jquery-2.2.4.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="./assets/dict.js"></script>
+    <style>
+        .virtual-key {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 2px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" style="margin-top: 3em;">
+        <h1 style="text-align: center;margin-bottom: 2em;">Поиск по словарю ительменского языка</h1>
+        
+        <div class="search" style="width: 65%;margin:auto;">
+            <form autocomplete="off">
+                <input id="search" type="text" style="width: 100%;height: 2em;font-size: 16pt;">
+            </form>
+            <div id="virtual-keyboard" style="margin-top: 1em;">
+                <span class="virtual-key">ʔ</span>
+                <span class="virtual-key">č</span>
+                <span class="virtual-key">χ</span>
+                <span class="virtual-key">ɣ</span>
+                <span class="virtual-key">ɬ</span>
+                <span class="virtual-key">ɲ</span>
+                <span class="virtual-key">ŋ</span>
+                <span class="virtual-key">ə</span>
+            </div>
+            <div class="form-check" style="font-size: 16pt;margin-top:1em;">
+                <input class="form-check-input" type="checkbox" value="" id="check">
+                <label class="form-check-label" for="check">
+                  полнотекстовый поиск
+                </label>
+            </div>
+            <div class="form-check" style="font-size: 16pt;margin-top:1em;">
+                <input class="form-check-input" type="checkbox" value="" id="regex-check">
+                <label class="form-check-label" for="regex-check">
+                  поиск по регулярным выражениям
+                </label>
+            </div>
+        </div>
+
+        <div class="result" id="result" style="width: 65%;margin:auto;margin-top: 3em;font-size: 16pt;">
+            
+        </div>
+    </div>
+
+</body>
+
+<script src="./assets/script.js"></script>
+</html>
