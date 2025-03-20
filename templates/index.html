@@ -1,62 +1,232 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ительменский словарь</title>
-    <script src="./assets/jquery-2.2.4.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="./assets/dict.js"></script>
+    
+    <!-- Подключение Google Fonts (шрифт Mulish) -->
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600&display=swap" rel="stylesheet">
+
     <style>
-        .virtual-key {
+        body {
+            font-family: 'Mulish', sans-serif;
+            text-align: center;
+            margin: 40px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        input, select {
+            font-size: 14px;
+            padding: 10px;
+            margin: 10px 0;
+            width: calc(100% - 22px);
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-family: 'Mulish', sans-serif;
+            box-sizing: border-box;
+        }
+        .keyboard-container {
+            margin-top: 10px;
+        }
+        .keyboard-toggle {
+            font-size: 14px;
+            background-color: #6c757d;
+            border: none;
+            color: white;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .keyboard {
+            display: none;
+            margin-top: 10px;
+        }
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 5px;
+        }
+        .key {
             display: inline-block;
             padding: 5px 10px;
-            margin: 2px;
+            font-size: 14px;
+            font-weight: 500;
             border: 1px solid #ccc;
             cursor: pointer;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            transition: 0.2s;
+            min-width: 30px;
+            text-align: center;
+        }
+        .key:hover {
+            background-color: #d6d8db;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .checkbox-container input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            font-size: 14px;
+            color: #007bff;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            position: absolute;
+            left: 50%;
+            bottom: 130%;
+            width: 200px;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 6px;
+            border-radius: 5px;
+            font-size: 12px;
+            text-align: left;
+            white-space: normal;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            line-height: 1.4;
+        }
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .result {
+            font-size: 15px;
+            margin-top: 20px;
+            font-weight: 500;
+            color: #333;
+            text-align: left;
         }
     </style>
 </head>
-
 <body>
-    <div class="container" style="margin-top: 3em;">
-        <h1 style="text-align: center;margin-bottom: 2em;">Поиск по словарю ительменского языка</h1>
-        
-        <div class="search" style="width: 65%;margin:auto;">
-            <form autocomplete="off">
-                <input id="search" type="text" style="width: 100%;height: 2em;font-size: 16pt;">
-            </form>
-            <div id="virtual-keyboard" style="margin-top: 1em;">
-                <span class="virtual-key">ʔ</span>
-                <span class="virtual-key">č</span>
-                <span class="virtual-key">χ</span>
-                <span class="virtual-key">ɣ</span>
-                <span class="virtual-key">ɬ</span>
-                <span class="virtual-key">ɲ</span>
-                <span class="virtual-key">ŋ</span>
-                <span class="virtual-key">ə</span>
+
+    <div class="container">
+        <h1>Ительменский словарь</h1>
+        <form method="POST">
+            <input id="search" type="text" name="query" placeholder="Введите слово..." autocomplete="off">
+            <select id="direction">
+                <option value="itelmen_to_russian">Ительменский → Русский</option>
+                <option value="russian_to_itelmen">Русский → Ительменский</option>
+            </select>
+        </form>
+
+        <!-- Кнопка для показа клавиатуры -->
+        <div class="keyboard-container">
+            <button class="keyboard-toggle" onclick="toggleKeyboard()">Показать / скрыть клавиатуру</button>
+        </div>
+
+        <div class="keyboard" id="keyboard">
+            <div class="keyboard-row">
+                <span class="key">ɨ</span>
+                <span class="key">č</span>
+                <span class="key">χ</span>
+                <span class="key">ɬ</span>
+                <span class="key">ʎ</span>
+                <span class="key">ɲ</span>
+                <span class="key">ŋ</span>
+                <span class="key">ʔ</span>
             </div>
-            <div class="form-check" style="font-size: 16pt;margin-top:1em;">
-                <input class="form-check-input" type="checkbox" value="" id="check">
-                <label class="form-check-label" for="check">
-                  полнотекстовый поиск
-                </label>
-            </div>
-            <div class="form-check" style="font-size: 16pt;margin-top:1em;">
-                <input class="form-check-input" type="checkbox" value="" id="regex-check">
-                <label class="form-check-label" for="regex-check">
-                  поиск по регулярным выражениям
-                </label>
+            <div class="keyboard-row">
+                <span class="key">ʂ</span>
+                <span class="key">ɕː</span>
+                <span class="key">ʐ</span>
+                <span class="key">t͡s</span>
+                <span class="key">ә</span>
+                <span class="key">ʷ</span>
+                <span class="key">ŭ</span>
+                <span class="key">ŏ</span>
+                <span class="key">ǎ</span>
             </div>
         </div>
 
-        <div class="result" id="result" style="width: 65%;margin:auto;margin-top: 3em;font-size: 16pt;">
-            
+        <!-- Чекбокс для включения регулярного поиска + подсказка -->
+        <div class="checkbox-container">
+            <input type="checkbox" id="regex-checkbox">
+            <label for="regex-checkbox">Поиск по регулярным выражениям</label>
+            <span class="tooltip">?
+                <span class="tooltip-text">
+                    <strong>Символы регулярных выражений:</strong><br>
+                    . — любой символ<br>
+                    ^ — начало слова<br>
+                    $ — конец слова<br>
+                    * — 0 или более повторений<br>
+                    + — 1 или более повторений<br>
+                    ? — 0 или 1 повторение<br>
+                    [] — любой символ внутри<br>
+                    () — группировка<br>
+                    | — или
+                </span>
+            </span>
         </div>
+
+        <div class="result" id="result"></div>
     </div>
 
-</body>
+    <script>
+        function toggleKeyboard() {
+            let keyboard = document.getElementById("keyboard");
+            keyboard.style.display = (keyboard.style.display === "none" || keyboard.style.display === "") ? "block" : "none";
+        }
 
-<script src="./assets/script.js"></script>
+        function search() {
+            let query = document.getElementById("search").value.trim();
+            let direction = document.getElementById("direction").value;
+            let regexMode = document.getElementById("regex-checkbox").checked;
+
+            if (query.length === 0) {
+                document.getElementById("result").innerHTML = "";
+                return;
+            }
+
+            fetch(`/search?q=${encodeURIComponent(query)}&direction=${direction}&regex=${regexMode}`)
+                .then(response => response.json())
+                .then(data => {
+                    let resultDiv = document.getElementById("result");
+                    resultDiv.innerHTML = Object.keys(data).length
+                        ? Object.entries(data).map(([word, translation]) => `<p><strong>${word}</strong> - ${translation}</p>`).join("")
+                        : "<p><strong>Не найдено</strong></p>";
+                });
+        }
+
+        document.getElementById("search").addEventListener("input", search);
+        document.getElementById("direction").addEventListener("change", search);
+        document.getElementById("regex-checkbox").addEventListener("change", search);
+    </script>
+
+</body>
 </html>
