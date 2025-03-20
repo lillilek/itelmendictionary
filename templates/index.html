@@ -172,26 +172,16 @@
                 <span class="key">ŏ</span>
                 <span class="key">ǎ</span>
             </div>
-        </div>
-
-        <!-- Чекбокс для включения регулярного поиска + подсказка -->
-        <div class="checkbox-container">
-            <input type="checkbox" id="regex-checkbox">
-            <label for="regex-checkbox">Поиск по регулярным выражениям</label>
-            <span class="tooltip">?
-                <span class="tooltip-text">
-                    <strong>Символы регулярных выражений:</strong><br>
-                    . — любой символ<br>
-                    ^ — начало слова<br>
-                    $ — конец слова<br>
-                    * — 0 или более повторений<br>
-                    + — 1 или более повторений<br>
-                    ? — 0 или 1 повторение<br>
-                    [] — любой символ внутри<br>
-                    () — группировка<br>
-                    | — или
-                </span>
-            </span>
+            <div class="keyboard-row">
+                <span class="key">ӄ</span>
+                <span class="key">ӽ</span>
+                <span class="key">ԓ</span>
+                <span class="key">љ</span>
+                <span class="key">њ</span>
+                <span class="key">ӈ</span>
+                <span class="key">˚</span>
+                <span class="key">ў</span>
+            </div>
         </div>
 
         <div class="result" id="result"></div>
@@ -203,10 +193,20 @@
             keyboard.style.display = (keyboard.style.display === "none" || keyboard.style.display === "") ? "block" : "none";
         }
 
+        function transliterate(text) {
+            const mapping = {
+                "ӄ": "q", "ӽ": "χ", "ԓ": "ɬ", "љ": "ʎ",
+                "њ": "ɲ", "ӈ": "ŋ", "ʔ": "ʔ", "ә": "ə",
+                "˚": "ʷ", "ў": "ŭ", "ŏ": "ŏ", "ǎ": "ǎ"
+            };
+
+            return text.split("").map(char => mapping[char] || char).join("");
+        }
+
         function search() {
             let query = document.getElementById("search").value.trim();
             let direction = document.getElementById("direction").value;
-            let regexMode = document.getElementById("regex-checkbox").checked;
+            let regexMode = document.getElementById("regex-checkbox")?.checked || false;
 
             if (query.length === 0) {
                 document.getElementById("result").innerHTML = "";
@@ -225,7 +225,23 @@
 
         document.getElementById("search").addEventListener("input", search);
         document.getElementById("direction").addEventListener("change", search);
-        document.getElementById("regex-checkbox").addEventListener("change", search);
+
+        document.querySelectorAll(".key").forEach(key => {
+            key.addEventListener("click", function() {
+                let searchBox = document.getElementById("search");
+                searchBox.focus();
+                let start = searchBox.selectionStart;
+                let end = searchBox.selectionEnd;
+                let char = this.textContent;
+                
+                // Авто-транслитерация
+                let translitChar = transliterate(char);
+
+                searchBox.value = searchBox.value.substring(0, start) + this.textContent + searchBox.value.substring(end);
+                searchBox.selectionStart = searchBox.selectionEnd = start + this.textContent.length;
+                searchBox.dispatchEvent(new Event("input"));
+            });
+        });
     </script>
 
 </body>
