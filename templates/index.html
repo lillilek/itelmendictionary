@@ -184,6 +184,27 @@
             </div>
         </div>
 
+        <!-- Чекбокс для включения регулярного поиска + подсказка -->
+         <div class="checkbox-container">
+            <input type="checkbox" id="regex-checkbox">
+            <label for="regex-checkbox">Поиск по регулярным выражениям</label>
+            <span class="tooltip">?
+                <span class="tooltip-text">
+                    <strong>Символы регулярных выражений:</strong><br>
+                    . — любой символ<br>
+                    ^ — начало слова<br>
+                    $ — конец слова<br>
+                    * — 0 или более повторений<br>
+                    + — 1 или более повторений<br>
+                    ? — 0 или 1 повторение<br>
+                    [] — любой символ внутри<br>
+                    () — группировка<br>
+                    | — или
+                </span>
+            </span>
+        </div>
+
+
         <div class="result" id="result"></div>
     </div>
 
