@@ -185,26 +185,27 @@
         keyboard.style.display = (keyboard.style.display === "none" || keyboard.style.display === "") ? "block" : "none";
     }
 
-    function transliterate(char) {
+    function transliterate(text) {
         const mapping = {
             "ӄ": "q", "ӽ": "χ", "ԓ": "ɬ", "љ": "ʎ",
             "њ": "ɲ", "ӈ": "ŋ", "ʔ": "ʔ", "ә": "ə",
             "˚": "ʷ", "ў": "ŭ", "ŏ": "ŏ", "ǎ": "ǎ"
         };
-        return mapping[char] || char;
+
+        return text.split("").map(char => mapping[char] || char).join("");
     }
 
-    function search() {
+    function search(forceFuzzy = false) {
         let query = document.getElementById("search").value.trim();
         let direction = document.getElementById("direction").value;
-        let regexMode = document.getElementById("regex-checkbox").checked;
+        let regexMode = document.getElementById("regex-checkbox")?.checked || false;
 
-        if (!query) {
+        if (query.length === 0) {
             document.getElementById("result").innerHTML = "";
             return;
         }
 
-        fetch(`/search?q=${encodeURIComponent(query)}&direction=${direction}&regex=${regexMode}`)
+        fetch(`/search?q=${encodeURIComponent(query)}&direction=${direction}&regex=${regexMode}&fuzzy=${forceFuzzy}`)
             .then(response => response.json())
             .then(data => {
                 let resultDiv = document.getElementById("result");
@@ -214,19 +215,28 @@
             });
     }
 
-    document.getElementById("search").addEventListener("input", search);
-    document.getElementById("direction").addEventListener("change", search);
+    document.getElementById("search").addEventListener("input", () => search(false));
+    document.getElementById("direction").addEventListener("change", () => search(false));
+
+    document.getElementById("search").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            search(true);  // включаем fuzzy поиск
+        }
+    });
 
     document.querySelectorAll(".key").forEach(key => {
-        key.addEventListener("click", function () {
+        key.addEventListener("click", function() {
             let searchBox = document.getElementById("search");
             searchBox.focus();
             let start = searchBox.selectionStart;
             let end = searchBox.selectionEnd;
-            searchBox.value = searchBox.value.substring(0, start) + this.textContent + searchBox.value.substring(end);
-            searchBox.selectionStart = searchBox.selectionEnd = start + this.textContent.length;
+            let char = this.textContent;
+            searchBox.value = searchBox.value.substring(0, start) + char + searchBox.value.substring(end);
+            searchBox.selectionStart = searchBox.selectionEnd = start + char.length;
             searchBox.dispatchEvent(new Event("input"));
         });
     });
 </script>
+
 {% endblock %}

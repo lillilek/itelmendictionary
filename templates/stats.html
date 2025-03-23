@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Статистика запросов</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        canvas {
+            margin-bottom: 40px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            background-color: #fff;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <h1>Статистика запросов</h1>
+
+    <h2>График количества запросов по дням</h2>
+    <canvas id="requestsChart" height="80"></canvas>
+
+    <h2>Топ-10 слов за сегодня</h2>
+    <canvas id="topWordsChart" height="80"></canvas>
+
+    <h2>Таблица статистики</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Направление</th>
+                <th>Всего запросов</th>
+                <th>Найдено</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in stats %}
+            <tr>
+                <td>{{ row.date }}</td>
+                <td>{{ row.direction }}</td>
+                <td>{{ row.total }}</td>
+                <td>{{ row.found_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        const chartData = {{ chart_data|tojson|default("[]", true) }};
+        const labels = chartData.map(r => r.date);
+        const totals = chartData.map(r => r.total);
+        const founds = chartData.map(r => r.found_count);
+
+        new Chart(document.getElementById('requestsChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Всего запросов', data: totals, backgroundColor: 'rgba(54, 162, 235, 0.6)' },
+                    { label: 'Найдено', data: founds, backgroundColor: 'rgba(75, 192, 192, 0.6)' }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        const topWords = {{ top_words|tojson|default("[]", true) }};
+        if (topWords.length > 0) {
+            const wordLabels = topWords.map(([word]) => word);
+            const wordValues = topWords.map(([, count]) => count);
+
+            new Chart(document.getElementById('topWordsChart'), {
+                type: 'bar',
+                data: {
+                    labels: wordLabels,
+                    datasets: [{
+                        label: 'Количество',
+                        data: wordValues,
+                        backgroundColor: 'rgba(255, 159, 64, 0.6)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
