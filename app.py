@@ -28,6 +28,7 @@ def transliterate_to_latin(text):
     
     result = ""
     i = 0
+    
     while i < len(text):
         if i + 1 < len(text) and text[i:i+2] in mapping:
             result += mapping[text[i:i+2]]
