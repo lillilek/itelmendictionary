@@ -8,7 +8,7 @@ app = Flask(__name__)
 # Загрузка словарей
 itelmen_russian_df = pd.read_csv("itelmen_russian_dictionary.csv", dtype=str).fillna("")
 russian_itelmen_df = pd.read_csv("russian_itelmen_dictionary.csv", dtype=str).fillna("")
-affix_df = pd.read_csv("affixes_transliterated.csv", dtype=str).fillna("")
+affix_df = pd.read_csv("affixes_transliterated.csv", dtype=str, quotechar="\"", engine="python").fillna("")
 
 itelmen_russian_dict = dict(zip(itelmen_russian_df.iloc[:, 0].astype(str), itelmen_russian_df.iloc[:, 1].astype(str)))
 russian_itelmen_dict = dict(zip(russian_itelmen_df.iloc[:, 0].astype(str), russian_itelmen_df.iloc[:, 1].astype(str)))
@@ -118,4 +118,3 @@ def search_gloss():
 
 if __name__ == "__main__":
     app.run(debug=True)
-    
