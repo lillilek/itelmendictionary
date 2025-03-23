@@ -4,8 +4,8 @@ import re
 
 app = Flask(__name__)
 
-itelmen_russian_df = pd.read_csv("itelmen_russian_dictionary_normal.csv", dtype=str).fillna("")
-russian_itelmen_df = pd.read_csv("russian_itelmen_dictionary_normal.csv", dtype=str).fillna("")
+itelmen_russian_df = pd.read_csv("itelmen_russian_dictionary.csv", dtype=str).fillna("")
+russian_itelmen_df = pd.read_csv("russian_itelmen_dictionary.csv", dtype=str).fillna("")
 
 itelmen_russian_dict = dict(zip(itelmen_russian_df.iloc[:, 0].astype(str), itelmen_russian_df.iloc[:, 1].astype(str)))
 russian_itelmen_dict = dict(zip(russian_itelmen_df.iloc[:, 0].astype(str), russian_itelmen_df.iloc[:, 1].astype(str)))
