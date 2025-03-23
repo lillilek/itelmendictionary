@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Поиск по глоссам{% endblock %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 500px;
+        margin: 40px auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        font-family: 'Mulish', sans-serif;
+    }
+    h1 {
+        font-size: 22px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    #gloss-search {
+        font-size: 14px;
+        padding: 10px;
+        width: 100%;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        box-sizing: border-box;
+        margin-top: 10px;
+    }
+    .result {
+        font-size: 15px;
+        margin-top: 20px;
+        font-weight: 500;
+        color: #333;
+        text-align: left;
+    }
+    .keyboard-toggle {
+        font-size: 14px;
+        background-color: #6c757d;
+        border: none;
+        color: white;
+        padding: 8px;
+        cursor: pointer;
+        border-radius: 5px;
+        width: 100%;
+        margin-top: 10px;
+    }
+    .keyboard {
+        display: none;
+        margin-top: 10px;
+    }
+    .keyboard-row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-bottom: 5px;
+    }
+    .key {
+        display: inline-block;
+        padding: 5px 10px;
+        font-size: 14px;
+        font-weight: 500;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        transition: 0.2s;
+        min-width: 30px;
+        text-align: center;
+    }
+    .key:hover {
+        background-color: #d6d8db;
+    }
+</style>
+
+<div class="container">
+    <h1>Поиск по глоссам</h1>
+    <input id="gloss-search" type="text" placeholder="Введите глоссу..." autocomplete="off">
+
+    <button class="keyboard-toggle" onclick="toggleKeyboard()">Показать / скрыть клавиатуру</button>
+
+    <div class="keyboard" id="keyboard">
+        <div class="keyboard-row">
+            <span class="key">ɨ</span><span class="key">č</span><span class="key">χ</span><span class="key">ɬ</span>
+            <span class="key">ʎ</span><span class="key">ɲ</span><span class="key">ŋ</span><span class="key">ʔ</span>
+        </div>
+        <div class="keyboard-row">
+            <span class="key">ʂ</span><span class="key">ɕː</span><span class="key">ʐ</span><span class="key">t͡s</span>
+            <span class="key">ә</span><span class="key">ʷ</span><span class="key">ŭ</span><span class="key">ŏ</span><span class="key">ǎ</span>
+        </div>
+        <div class="keyboard-row">
+            <span class="key">ӄ</span><span class="key">ӽ</span><span class="key">ԓ</span><span class="key">љ</span>
+            <span class="key">њ</span><span class="key">ӈ</span><span class="key">˚</span><span class="key">ў</span>
+        </div>
+    </div>
+
+    <div class="result" id="gloss-result"></div>
+</div>
+
+<script>
+    function toggleKeyboard() {
+        let keyboard = document.getElementById("keyboard");
+        keyboard.style.display = (keyboard.style.display === "none" || keyboard.style.display === "") ? "block" : "none";
+    }
+
+    document.getElementById("gloss-search").addEventListener("input", function () {
+        let query = this.value.trim();
+        if (!query) {
+            document.getElementById("gloss-result").innerHTML = "";
+            return;
+        }
+
+        fetch(`/search_gloss?q=${encodeURIComponent(query)}`)
+            .then(r => r.json())
+            .then(data => {
+                let resultDiv = document.getElementById("gloss-result");
+                resultDiv.innerHTML = Object.keys(data).length
+                    ? Object.entries(data).map(([k, v]) => `<p><strong>${k}</strong> — ${v}</p>`).join("")
+                    : "<p><strong>Не найдено</strong></p>";
+            });
+    });
+
+    document.querySelectorAll(".key").forEach(key => {
+        key.addEventListener("click", function () {
+            let searchBox = document.getElementById("gloss-search");
+            searchBox.focus();
+            let start = searchBox.selectionStart;
+            let end = searchBox.selectionEnd;
+            searchBox.value = searchBox.value.substring(0, start) + this.textContent + searchBox.value.substring(end);
+            searchBox.selectionStart = searchBox.selectionEnd = start + this.textContent.length;
+            searchBox.dispatchEvent(new Event("input"));
+        });
+    });
+</script>
+{% endblock %}
