@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Поиск по глоссам{% endblock %}
+{% block title %}Поиск по аффиксам{% endblock %}
 
 {% block content %}
 <style>
@@ -20,7 +20,7 @@
         margin-bottom: 15px;
         text-align: center;
     }
-    #gloss-search {
+    #affix-search {
         font-size: 14px;
         padding: 10px;
         width: 100%;
@@ -77,8 +77,8 @@
 </style>
 
 <div class="container">
-    <h1>Поиск по глоссам</h1>
-    <input id="gloss-search" type="text" placeholder="Введите глоссу..." autocomplete="off">
+    <h1>Поиск по аффиксам</h1>
+    <input id="affix-search" type="text" placeholder="Введите аффикс..." autocomplete="off">
 
     <button class="keyboard-toggle" onclick="toggleKeyboard()">Показать / скрыть клавиатуру</button>
 
@@ -97,7 +97,7 @@
         </div>
     </div>
 
-    <div class="result" id="gloss-result"></div>
+    <div class="result" id="affix-result"></div>
 </div>
 
 <script>
@@ -106,17 +106,17 @@
         keyboard.style.display = (keyboard.style.display === "none" || keyboard.style.display === "") ? "block" : "none";
     }
 
-    document.getElementById("gloss-search").addEventListener("input", function () {
+    document.getElementById("affix-search").addEventListener("input", function () {
         let query = this.value.trim();
         if (!query) {
-            document.getElementById("gloss-result").innerHTML = "";
+            document.getElementById("affix-result").innerHTML = "";
             return;
         }
 
-        fetch(`/search_gloss?q=${encodeURIComponent(query)}`)
+        fetch(`/search_affix?q=${encodeURIComponent(query)}`)
             .then(r => r.json())
             .then(data => {
-                let resultDiv = document.getElementById("gloss-result");
+                let resultDiv = document.getElementById("affix-result");
                 resultDiv.innerHTML = Object.keys(data).length
                     ? Object.entries(data).map(([k, v]) => `<p><strong>${k}</strong> — ${v}</p>`).join("")
                     : "<p><strong>Не найдено</strong></p>";
@@ -125,7 +125,7 @@
 
     document.querySelectorAll(".key").forEach(key => {
         key.addEventListener("click", function () {
-            let searchBox = document.getElementById("gloss-search");
+            let searchBox = document.getElementById("affix-search");
             searchBox.focus();
             let start = searchBox.selectionStart;
             let end = searchBox.selectionEnd;

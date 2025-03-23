@@ -12,7 +12,7 @@ affix_df = pd.read_csv("affixes_transliterated.csv", dtype=str, quotechar="\"", 
 
 itelmen_russian_dict = dict(zip(itelmen_russian_df.iloc[:, 0].astype(str), itelmen_russian_df.iloc[:, 1].astype(str)))
 russian_itelmen_dict = dict(zip(russian_itelmen_df.iloc[:, 0].astype(str), russian_itelmen_df.iloc[:, 1].astype(str)))
-gloss_dict = dict(zip(affix_df["Аффикс"], affix_df["Описание"]))
+affix_dict = dict(zip(affix_df["Аффикс"], affix_df["Описание"]))
 
 def transliterate_to_latin(text):
     mapping = {
@@ -73,9 +73,9 @@ def index():
 def about():
     return render_template("about.html")
 
-@app.route("/glosses")
-def gloss_search_page():
-    return render_template("glosses.html")
+@app.route("/affixes")
+def affix_search_page():
+    return render_template("affixes.html")
 
 @app.route("/search", methods=["GET"])
 def search():
@@ -105,15 +105,15 @@ def search():
 
     return jsonify(results)
 
-@app.route("/search_gloss", methods=["GET"])
-def search_gloss():
+@app.route("/search_affix", methods=["GET"])
+def search_affix():
     query = request.args.get("q", "").strip().lower()
     if not query:
         return jsonify([])
 
-    results = {affix: gloss for affix, gloss in gloss_dict.items() if query in gloss.lower()}
+    results = {affix: gloss for affix, gloss in affix_dict.items() if query in gloss.lower()}
     if not results:
-        results = fuzzy_match(query, gloss_dict)
+        results = fuzzy_match(query, affix_dict)
     return jsonify(results)
 
 if __name__ == "__main__":
