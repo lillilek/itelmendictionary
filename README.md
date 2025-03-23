@@ -45,6 +45,6 @@
 - python-dateutil (непосредственно используется через pandas)
 - jinja2 (входит в Flask)
 
-Установка зависимостей:
+Установка requirements:
 ```bash
 pip install flask pandas matplotlib
