@@ -106,21 +106,21 @@
         keyboard.style.display = (keyboard.style.display === "none" || keyboard.style.display === "") ? "block" : "none";
     }
 
-    document.getElementById("affix-search").addEventListener("input", function () {
-        let query = this.value.trim();
-        if (!query) {
-            document.getElementById("affix-result").innerHTML = "";
-            return;
-        }
+    function renderAffixResults(data) {
+        let resultDiv = document.getElementById("affix-result");
+        resultDiv.innerHTML = Object.keys(data).length
+            ? Object.entries(data).map(([k, v]) => `<p><strong>${k}</strong> — ${v}</p>`).join("")
+            : "<p><strong>Не найдено</strong></p>";
+    }
 
+    function loadAffixResults(query = "") {
         fetch(`/search_affix?q=${encodeURIComponent(query)}`)
             .then(r => r.json())
-            .then(data => {
-                let resultDiv = document.getElementById("affix-result");
-                resultDiv.innerHTML = Object.keys(data).length
-                    ? Object.entries(data).map(([k, v]) => `<p><strong>${k}</strong> — ${v}</p>`).join("")
-                    : "<p><strong>Не найдено</strong></p>";
-            });
+            .then(data => renderAffixResults(data));
+    }
+
+    document.getElementById("affix-search").addEventListener("input", function () {
+        loadAffixResults(this.value.trim());
     });
 
     document.querySelectorAll(".key").forEach(key => {
@@ -134,5 +134,7 @@
             searchBox.dispatchEvent(new Event("input"));
         });
     });
+
+    loadAffixResults();
 </script>
 {% endblock %}

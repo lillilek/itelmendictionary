@@ -2,241 +2,1064 @@
 
 {% block content %}
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600&display=swap');
-
-    body {
-        font-family: 'Mulish', sans-serif;
-        background-color: #f8f9fa;
-        margin: auto;
-        text-align: center;
+    .page {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 28px 18px 44px;
     }
-    .container {
-        max-width: 500px;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    .page-header {
+        margin-bottom: 20px;
+        padding: 24px 26px;
+        border-radius: 24px;
+        background: linear-gradient(145deg, #f5efe4 0%, #ffffff 100%);
+        box-shadow: 0 16px 38px rgba(65, 47, 30, 0.08);
     }
-    h1 {
-        font-size: 22px;
+    .page-header h1 {
+        margin: 0 0 10px;
+        font-size: 34px;
+        color: #2b241d;
+    }
+    .page-header p {
+        margin: 0;
+        max-width: 900px;
+        color: #655444;
+        line-height: 1.6;
+        font-size: 15px;
+    }
+    .layout {
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+    }
+    .filter-column,
+    .content-column {
+        display: grid;
+        gap: 16px;
+    }
+    .panel {
+        background: #ffffff;
+        border-radius: 22px;
+        border: 1px solid #eadfce;
+        box-shadow: 0 12px 30px rgba(65, 47, 30, 0.06);
+    }
+    .search-panel {
+        padding: 22px;
+    }
+    .search-panel label,
+    .filter-panel h3,
+    .result-summary h2 {
+        color: #32281f;
+    }
+    .field-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
         font-weight: 600;
-        color: #333;
-        margin-bottom: 15px;
     }
-    input, select {
-        font-size: 14px;
-        padding: 10px;
-        margin: 10px 0;
-        width: calc(100% - 22px);
-        border: 1px solid #ced4da;
-        border-radius: 5px;
-        font-family: 'Mulish', sans-serif;
-        box-sizing: border-box;
+    .search-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 140px;
+        gap: 10px;
+        align-items: center;
     }
-    .keyboard-container {
-        margin-top: 10px;
-    }
-    .keyboard-toggle {
-        font-size: 14px;
-        background-color: #6c757d;
-        border: none;
-        color: white;
-        padding: 8px;
-        cursor: pointer;
-        border-radius: 5px;
+    .search-row input {
         width: 100%;
+        box-sizing: border-box;
+        padding: 14px 16px;
+        border-radius: 14px;
+        border: 1px solid #d8ccb8;
+        font-size: 17px;
+        font-family: inherit;
+        color: #2b241d;
+        background: #fffdfa;
+    }
+    .search-row input:focus {
+        outline: none;
+        border-color: #936338;
+        box-shadow: 0 0 0 3px rgba(147, 99, 56, 0.12);
+    }
+    .search-button,
+    .secondary-button,
+    .keyboard-toggle {
+        border: none;
+        border-radius: 14px;
+        padding: 13px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+    }
+    .search-button {
+        background: #6b7a46;
+        color: #ffffff;
+    }
+    .search-tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+    }
+    .script-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px;
+        border-radius: 14px;
+        background: #f3ebdf;
+    }
+    .script-toggle label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        padding: 8px 10px;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #49392b;
+    }
+    .script-toggle input {
+        margin: 0;
+        accent-color: #6b7a46;
+    }
+    .secondary-button,
+    .keyboard-toggle {
+        background: #efe6d9;
+        color: #49392b;
     }
     .keyboard {
         display: none;
-        margin-top: 10px;
+        margin-top: 14px;
+        padding: 16px;
+        border-radius: 18px;
+        background: #faf6ef;
+        border: 1px solid #eadfce;
     }
     .keyboard-row {
         display: flex;
-        justify-content: center;
         flex-wrap: wrap;
-        gap: 4px;
-        margin-bottom: 5px;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    .keyboard-row:last-child {
+        margin-bottom: 0;
     }
     .key {
-        display: inline-block;
-        padding: 5px 10px;
-        font-size: 14px;
-        font-weight: 500;
-        border: 1px solid #ccc;
+        border: none;
+        border-radius: 10px;
+        padding: 8px 11px;
+        background: #e7d7be;
+        color: #2f2418;
         cursor: pointer;
-        background-color: #e9ecef;
-        border-radius: 4px;
-        transition: 0.2s;
-        min-width: 30px;
-        text-align: center;
+        font-size: 15px;
+        font-family: inherit;
     }
-    .key:hover {
-        background-color: #d6d8db;
+    .filter-panel {
+        padding: 18px;
     }
-    .checkbox-container {
+    .filter-panel h3 {
+        margin: 0 0 12px;
+        font-size: 15px;
+    }
+    .filter-group + .filter-group {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #efe5d8;
+    }
+    .filter-title {
+        margin: 0 0 10px;
+        color: #6a5742;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .choice-list {
+        display: grid;
+        gap: 9px;
+    }
+    .choice {
         display: flex;
         align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: #403126;
+    }
+    .choice input {
+        margin: 0;
+        width: 16px;
+        height: 16px;
+        accent-color: #6b7a46;
+    }
+    .choice small {
+        color: #8c7b69;
+    }
+    .result-summary {
+        padding: 18px 22px;
+    }
+    .result-summary h2 {
+        margin: 0 0 6px;
+        font-size: 20px;
+    }
+    .result-summary p {
+        margin: 0;
+        color: #685746;
+        line-height: 1.5;
+        font-size: 14px;
+    }
+    .result-list {
+        display: grid;
+        gap: 14px;
+    }
+    .pagination {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
         justify-content: center;
-        gap: 5px;
-        margin-top: 10px;
+        margin-top: 4px;
+    }
+    .pagination[hidden] {
+        display: none;
+    }
+    .page-button,
+    .page-dots {
+        min-width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         font-size: 14px;
     }
-    .checkbox-container input {
-        width: 18px;
-        height: 18px;
+    .page-button {
+        border: 1px solid #e0d3c2;
+        background: #ffffff;
+        color: #4b3a2c;
         cursor: pointer;
+        font-family: inherit;
     }
-    .tooltip {
-        position: relative;
-        display: inline-block;
-        cursor: pointer;
+    .page-button.active {
+        background: #6b7a46;
+        border-color: #6b7a46;
+        color: #ffffff;
+    }
+    .page-button:disabled {
+        opacity: 0.45;
+        cursor: default;
+    }
+    .page-dots {
+        color: #8b7866;
+    }
+    .entry-card {
+        padding: 20px 22px;
+    }
+    .entry-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 16px;
+    }
+    .entry-word {
+        margin: 0;
+        font-size: 28px;
+        line-height: 1.2;
+        color: #2b241d;
+    }
+    .entry-part {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #f1eadf;
+        color: #5f4b38;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .entry-translation {
+        margin: 12px 0 0;
+        font-size: 18px;
+        line-height: 1.55;
+        color: #413225;
+    }
+    .meta-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+    }
+    .meta-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #f8f3ea;
+        color: #614e3d;
+        font-size: 13px;
+    }
+    .links-row {
+        margin-top: 16px;
+        color: #5d4a39;
         font-size: 14px;
-        color: #007bff;
-        font-weight: bold;
-        margin-left: 5px;
+        line-height: 1.7;
     }
-    .tooltip .tooltip-text {
-        visibility: hidden;
-        position: absolute;
-        left: 50%;
-        bottom: 130%;
-        width: 200px;
-        transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.9);
-        color: #fff;
-        padding: 6px;
-        border-radius: 5px;
-        font-size: 12px;
-        text-align: left;
-        white-space: normal;
-        z-index: 10;
-        opacity: 0;
-        transition: opacity 0.2s ease-in-out;
-        line-height: 1.4;
+    .link-tag {
+        border: none;
+        padding: 0;
+        margin-right: 12px;
+        background: transparent;
+        color: #915020;
+        font: inherit;
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 3px;
     }
-    .tooltip:hover .tooltip-text {
-        visibility: visible;
-        opacity: 1;
-    }
-    .result {
+    .empty-state {
+        padding: 24px;
+        text-align: center;
+        color: #6f5e4d;
         font-size: 15px;
-        margin-top: 20px;
-        font-weight: 500;
-        color: #333;
-        text-align: left;
+    }
+    @media (max-width: 1024px) {
+        .layout {
+            grid-template-columns: 1fr;
+        }
+    }
+    @media (max-width: 640px) {
+        .page {
+            padding: 18px 12px 30px;
+        }
+        .page-header {
+            padding: 18px;
+        }
+        .page-header h1 {
+            font-size: 29px;
+        }
+        .search-row {
+            grid-template-columns: 1fr;
+        }
+        .entry-header {
+            flex-direction: column;
+            align-items: start;
+        }
+        .search-panel,
+        .filter-panel,
+        .result-summary,
+        .entry-card {
+            padding: 18px;
+        }
     }
 </style>
 
-<div class="container">
-    <h1>Ительменский словарь</h1>
-    <form method="POST">
-        <input id="search" type="text" name="query" placeholder="Введите слово..." autocomplete="off">
-        <select id="direction">
-            <option value="itelmen_to_russian">Ительменский → Русский</option>
-            <option value="russian_to_itelmen">Русский → Ительменский</option>
-        </select>
-    </form>
+<div class="page">
+    <section class="page-header">
+        <h1>Ительменский словарь</h1>
+        <p>
+            Интерфейс поиска сделан по модели расширенного словарного поиска: можно искать по словоформам и толкованиям,
+            фильтровать результаты частями речи и пометами, а также включать поиск целого слова, игнорирование регистра
+            и диакритики. Поиск на ительменском языке работает на кириллице и латинице.
+        </p>
+    </section>
 
-    <div class="keyboard-container">
-        <button class="keyboard-toggle" onclick="toggleKeyboard()">Показать / скрыть клавиатуру</button>
+    <div class="layout">
+        <aside class="filter-column">
+            <section class="panel filter-panel">
+                <div class="filter-group">
+                    <h3>Язык поиска</h3>
+                    <div class="choice-list">
+                        {% for option in search_filters.languages %}
+                        <label class="choice">
+                            <input type="checkbox" name="languages" value="{{ option.value }}" checked>
+                            <span>{{ option.label }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h3>Искать в</h3>
+                    <div class="choice-list">
+                        {% for option in search_filters.domains %}
+                        <label class="choice">
+                            <input type="checkbox" name="domains" value="{{ option.value }}" checked>
+                            <span>{{ option.label }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h3>Параметры</h3>
+                    <div class="choice-list">
+                        <label class="choice">
+                            <input type="checkbox" name="whole_word" value="1">
+                            <span>Только целое слово</span>
+                        </label>
+                        <label class="choice">
+                            <input type="checkbox" name="ignore_diacritics" value="1" checked>
+                            <span>Игнорировать диакритику</span>
+                        </label>
+                        <label class="choice">
+                            <input type="checkbox" name="ignore_case" value="1" checked>
+                            <span>Игнорировать регистр</span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel filter-panel">
+                <h3>Части речи</h3>
+                <div class="choice-list">
+                    {% for option in search_filters.parts_of_speech %}
+                    <label class="choice">
+                        <input type="checkbox" name="parts_of_speech" value="{{ option.value }}">
+                        <span>{{ option.value }}</span>
+                        <small>{{ option.count }}</small>
+                    </label>
+                    {% endfor %}
+                </div>
+            </section>
+
+            {% for group in search_filters.label_groups %}
+            <section class="panel filter-panel">
+                <h3>{{ group.title }}</h3>
+                <div class="choice-list">
+                    {% for option in group.options %}
+                    <label class="choice">
+                        <input type="checkbox" name="labels" value="{{ option.value }}">
+                        <span>{{ option.value }}</span>
+                        <small>{{ option.count }}</small>
+                    </label>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endfor %}
+        </aside>
+
+        <main class="content-column">
+            <section class="panel search-panel">
+                <form id="search-form">
+                    <label class="field-label" for="search">Введите запрос, до 100 символов</label>
+                    <div class="search-row">
+                        <input id="search" type="text" name="q" maxlength="100" autocomplete="off" placeholder="Например: рот, аваном, ɬinwetat">
+                        <button class="search-button" type="submit">Найти</button>
+                    </div>
+                </form>
+
+                <div class="search-tools">
+                    <div class="script-toggle" aria-label="Выдача">
+                        <label>
+                            <input type="radio" name="output_script" value="cyrillic" checked>
+                            <span>Кириллица</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="output_script" value="latin">
+                            <span>Латиница</span>
+                        </label>
+                    </div>
+                    <button class="search-button" type="button" id="filter-only-search">Показать по параметрам</button>
+                    <button class="keyboard-toggle" type="button" id="keyboard-toggle">Клавиатура</button>
+                    <button class="secondary-button" type="button" id="clear-filters">Сбросить фильтры</button>
+                </div>
+
+                <div class="keyboard" id="keyboard">
+                    <div class="keyboard-row">
+                        <button class="key" type="button">ӄ</button>
+                        <button class="key" type="button">ӽ</button>
+                        <button class="key" type="button">ԓ</button>
+                        <button class="key" type="button">љ</button>
+                        <button class="key" type="button">њ</button>
+                        <button class="key" type="button">ӈ</button>
+                        <button class="key" type="button">ў</button>
+                        <button class="key" type="button">˚</button>
+                    </div>
+                    <div class="keyboard-row">
+                        <button class="key" type="button">ɨ</button>
+                        <button class="key" type="button">č</button>
+                        <button class="key" type="button">χ</button>
+                        <button class="key" type="button">ɬ</button>
+                        <button class="key" type="button">ʎ</button>
+                        <button class="key" type="button">ɲ</button>
+                        <button class="key" type="button">ŋ</button>
+                        <button class="key" type="button">ʔ</button>
+                    </div>
+                    <div class="keyboard-row">
+                        <button class="key" type="button">ʂ</button>
+                        <button class="key" type="button">ɕː</button>
+                        <button class="key" type="button">ʐ</button>
+                        <button class="key" type="button">t͡s</button>
+                        <button class="key" type="button">ə</button>
+                        <button class="key" type="button">ʷ</button>
+                        <button class="key" type="button">ŭ</button>
+                        <button class="key" type="button">ŏ</button>
+                        <button class="key" type="button">ǎ</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel result-summary" id="summary">
+                <h2>Поиск</h2>
+                <p>Введите запрос и при необходимости уточните поиск фильтрами.</p>
+            </section>
+
+            <div class="result-list" id="result"></div>
+            <div class="pagination" id="pagination" hidden></div>
+        </main>
     </div>
-
-    <div class="keyboard" id="keyboard">
-        <div class="keyboard-row">
-            <span class="key">ɨ</span><span class="key">č</span><span class="key">χ</span><span class="key">ɬ</span>
-            <span class="key">ʎ</span><span class="key">ɲ</span><span class="key">ŋ</span><span class="key">ʔ</span>
-        </div>
-        <div class="keyboard-row">
-            <span class="key">ʂ</span><span class="key">ɕː</span><span class="key">ʐ</span><span class="key">t͡s</span>
-            <span class="key">ә</span><span class="key">ʷ</span><span class="key">ŭ</span><span class="key">ŏ</span><span class="key">ǎ</span>
-        </div>
-        <div class="keyboard-row">
-            <span class="key">ӄ</span><span class="key">ӽ</span><span class="key">ԓ</span><span class="key">љ</span>
-            <span class="key">њ</span><span class="key">ӈ</span><span class="key">˚</span><span class="key">ў</span>
-        </div>
-    </div>
-
-    <div class="checkbox-container">
-        <input type="checkbox" id="regex-checkbox">
-        <label for="regex-checkbox">Поиск по регулярным выражениям</label>
-        <span class="tooltip">?
-            <span class="tooltip-text">
-                <strong>Символы регулярных выражений:</strong><br>
-                . — любой символ<br>
-                ^ — начало слова<br>
-                $ — конец слова<br>
-                * — 0 или более повторений<br>
-                + — 1 или более повторений<br>
-                ? — 0 или 1 повторение<br>
-                [] — любой символ внутри<br>
-                () — группировка<br>
-                | — или
-            </span>
-        </span>
-    </div>
-
-    <div class="result" id="result"></div>
 </div>
 
 <script>
-    function toggleKeyboard() {
-        let keyboard = document.getElementById("keyboard");
-        keyboard.style.display = (keyboard.style.display === "none" || keyboard.style.display === "") ? "block" : "none";
+    const SEARCH_FILTERS = {{ search_filters|tojson }};
+    const DEFAULTS = SEARCH_FILTERS.defaults;
+    let searchTimer = null;
+    let lastPayload = null;
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;");
     }
 
-    function transliterate(text) {
-        const mapping = {
-            "ӄ": "q", "ӽ": "χ", "ԓ": "ɬ", "љ": "ʎ",
-            "њ": "ɲ", "ӈ": "ŋ", "ʔ": "ʔ", "ә": "ə",
-            "˚": "ʷ", "ў": "ŭ", "ŏ": "ŏ", "ǎ": "ǎ"
+    function getCheckedValues(name) {
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(input => input.value);
+    }
+
+    function setCheckedValues(name, values) {
+        const selected = new Set(values);
+        document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+            input.checked = selected.has(input.value);
+        });
+    }
+
+    function getSelectedValue(name, fallback = "") {
+        const input = document.querySelector(`input[name="${name}"]:checked`);
+        return input ? input.value : fallback;
+    }
+
+    function readState() {
+        let languages = getCheckedValues("languages");
+        let domains = getCheckedValues("domains");
+
+        if (!languages.length) {
+            languages = [...DEFAULTS.languages];
+            setCheckedValues("languages", languages);
+        }
+        if (!domains.length) {
+            domains = [...DEFAULTS.domains];
+            setCheckedValues("domains", domains);
+        }
+
+        return {
+            q: document.getElementById("search").value.trim(),
+            languages,
+            domains,
+            parts_of_speech: getCheckedValues("parts_of_speech"),
+            labels: getCheckedValues("labels"),
+            whole_word: document.querySelector('input[name="whole_word"]').checked,
+            ignore_diacritics: document.querySelector('input[name="ignore_diacritics"]').checked,
+            ignore_case: document.querySelector('input[name="ignore_case"]').checked,
+            output_script: getSelectedValue("output_script", "cyrillic"),
+            page: 1,
         };
-
-        return text.split("").map(char => mapping[char] || char).join("");
     }
 
-    function search(forceFuzzy = false) {
-        let query = document.getElementById("search").value.trim();
-        let direction = document.getElementById("direction").value;
-        let regexMode = document.getElementById("regex-checkbox")?.checked || false;
+    function applyState(state) {
+        document.getElementById("search").value = state.q || "";
+        setCheckedValues("languages", state.languages?.length ? state.languages : DEFAULTS.languages);
+        setCheckedValues("domains", state.domains?.length ? state.domains : DEFAULTS.domains);
+        setCheckedValues("parts_of_speech", state.parts_of_speech || []);
+        setCheckedValues("labels", state.labels || []);
+        document.querySelector('input[name="whole_word"]').checked = Boolean(state.whole_word);
+        document.querySelector('input[name="ignore_diacritics"]').checked = state.ignore_diacritics !== false;
+        document.querySelector('input[name="ignore_case"]').checked = state.ignore_case !== false;
+        const scriptValue = state.output_script === "latin" ? "latin" : "cyrillic";
+        const scriptInput = document.querySelector(`input[name="output_script"][value="${scriptValue}"]`);
+        if (scriptInput) {
+            scriptInput.checked = true;
+        }
+    }
 
-        if (query.length === 0) {
-            document.getElementById("result").innerHTML = "";
+    function stateFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            q: params.get("q") || "",
+            languages: params.get("languages") ? params.get("languages").split(",") : [...DEFAULTS.languages],
+            domains: params.get("domains") ? params.get("domains").split(",") : [...DEFAULTS.domains],
+            parts_of_speech: params.get("parts_of_speech") ? params.get("parts_of_speech").split(",") : [],
+            labels: params.get("labels") ? params.get("labels").split(",") : [],
+            whole_word: params.get("whole_word") === "1",
+            ignore_diacritics: params.get("ignore_diacritics") !== "0",
+            ignore_case: params.get("ignore_case") !== "0",
+            output_script: params.get("output_script") === "latin" ? "latin" : "cyrillic",
+            page: Math.max(1, Number(params.get("page") || "1")),
+        };
+    }
+
+    function updateUrl(state) {
+        const params = new URLSearchParams();
+        if (state.q) {
+            params.set("q", state.q);
+        }
+        if (state.languages.length && state.languages.join(",") !== DEFAULTS.languages.join(",")) {
+            params.set("languages", state.languages.join(","));
+        }
+        if (state.domains.length && state.domains.join(",") !== DEFAULTS.domains.join(",")) {
+            params.set("domains", state.domains.join(","));
+        }
+        if (state.parts_of_speech.length) {
+            params.set("parts_of_speech", state.parts_of_speech.join(","));
+        }
+        if (state.labels.length) {
+            params.set("labels", state.labels.join(","));
+        }
+        if (state.whole_word) {
+            params.set("whole_word", "1");
+        }
+        if (!state.ignore_diacritics) {
+            params.set("ignore_diacritics", "0");
+        }
+        if (!state.ignore_case) {
+            params.set("ignore_case", "0");
+        }
+        if (state.output_script === "latin") {
+            params.set("output_script", "latin");
+        }
+        if (state.page && state.page > 1) {
+            params.set("page", String(state.page));
+        }
+        const queryString = params.toString();
+        const nextUrl = queryString ? `${window.location.pathname}?${queryString}` : window.location.pathname;
+        history.replaceState(null, "", nextUrl);
+    }
+
+    function updateSummary(title, description) {
+        document.getElementById("summary").innerHTML = `
+            <h2>${escapeHtml(title)}</h2>
+            <p>${description}</p>
+        `;
+    }
+
+    function hasActiveFilters(state) {
+        return Boolean(state.parts_of_speech.length || state.labels.length);
+    }
+
+    function hasSearchCriteria(state) {
+        return Boolean(state.q || hasActiveFilters(state));
+    }
+
+    function buildActiveFilterText(state) {
+        const fragments = [];
+        if (state.parts_of_speech.length) {
+            fragments.push(`части речи: <strong>${escapeHtml(state.parts_of_speech.join(", "))}</strong>`);
+        }
+        if (state.labels.length) {
+            fragments.push(`пометы: <strong>${escapeHtml(state.labels.join(", "))}</strong>`);
+        }
+        return fragments.join("; ");
+    }
+
+    function renderIdleState(state) {
+        const container = document.getElementById("result");
+        document.getElementById("pagination").hidden = true;
+        container.innerHTML = "";
+        lastPayload = null;
+
+        if (state.q) {
+            updateSummary("Поиск", "Нажмите «Найти» или просто продолжайте вводить запрос.");
             return;
         }
 
-        fetch(`/search?q=${encodeURIComponent(query)}&direction=${direction}&regex=${regexMode}&fuzzy=${forceFuzzy}`)
+        if (hasActiveFilters(state)) {
+            updateSummary(
+                "Отбор по параметрам",
+                `Выбраны фильтры: ${buildActiveFilterText(state)}. Нажмите <strong>«Показать по параметрам»</strong>, чтобы вывести все подходящие статьи.`
+            );
+            return;
+        }
+
+        updateSummary("Поиск", "Введите запрос или выберите фильтры и нажмите «Показать по параметрам».");
+    }
+
+    function transliterateForDisplay(text) {
+        const source = String(text || "");
+        const digraphMap = [
+            ["Ты", "Ti"],
+            ["ты", "ti"],
+            ["Лы", "Li"],
+            ["лы", "li"],
+            ["Ны", "Ni"],
+            ["ны", "ni"],
+        ];
+        const charMap = {
+            "А": "A", "а": "a",
+            "Б": "B", "б": "b",
+            "В": "W", "в": "w",
+            "Г": "G", "г": "g",
+            "Д": "D", "д": "d",
+            "Е": "E", "е": "e",
+            "Ё": "Ë", "ё": "ë",
+            "Ж": "Ž", "ж": "ž",
+            "З": "Z", "з": "z",
+            "И": "I", "и": "i",
+            "Й": "J", "й": "j",
+            "К": "K", "к": "k",
+            "Л": "L", "л": "l",
+            "М": "M", "м": "m",
+            "Н": "N", "н": "n",
+            "О": "O", "о": "o",
+            "П": "P", "п": "p",
+            "Р": "R", "р": "r",
+            "С": "S", "с": "s",
+            "Т": "T", "т": "t",
+            "У": "U", "у": "u",
+            "Ф": "F", "ф": "f",
+            "Х": "X", "х": "x",
+            "Ц": "T͡S", "ц": "t͡s",
+            "Ч": "Č", "ч": "č",
+            "Ш": "Ṣ", "ш": "ʂ",
+            "Щ": "Ś", "щ": "ɕː",
+            "Ъ": "ʺ", "ъ": "ʺ",
+            "Ы": "Ɨ", "ы": "ɨ",
+            "Ь": "ʼ", "ь": "ʼ",
+            "Э": "E", "э": "e",
+            "Ю": "Ju", "ю": "ju",
+            "Я": "Ja", "я": "ja",
+            "Ә": "Ə", "ә": "ə",
+            "ӄ": "q", "Ӄ": "Q",
+            "ӽ": "χ", "Ӽ": "Χ",
+            "ԓ": "ɬ", "Ԓ": "ɬ",
+            "љ": "ʎ", "Љ": "ʎ",
+            "њ": "ɲ", "Њ": "ɲ",
+            "ӈ": "ŋ", "Ӈ": "Ŋ",
+            "ў": "ŭ", "Ў": "Ŭ",
+            "˚": "ʷ",
+        };
+
+        let result = source;
+        digraphMap.forEach(([from, to]) => {
+            result = result.replaceAll(from, to);
+        });
+        return Array.from(result).map(char => charMap[char] || char).join("");
+    }
+
+    function displayItelmen(value, state) {
+        if (state.output_script === "latin") {
+            return transliterateForDisplay(value);
+        }
+        return value || "";
+    }
+
+    function renderMeta(entry, state) {
+        const items = [];
+
+        if (entry.dialect) {
+            items.push(`диалект: ${entry.dialect}`);
+        }
+        if (entry.phonetic_variant) {
+            items.push(`фонетический вариант: ${displayItelmen(entry.phonetic_variant, state)}`);
+        }
+        if (entry.northern_variant) {
+            items.push(`северный вариант: ${displayItelmen(entry.northern_variant, state)}`);
+        }
+        entry.verb_labels.forEach(label => items.push(label));
+        if (entry.grammar_note) {
+            items.push(`помета: ${entry.grammar_note}`);
+        }
+        if (entry.infinitive) {
+            items.push(`инфинитив: ${displayItelmen(entry.infinitive, state)}`);
+        }
+        if (entry.plural) {
+            items.push(`множественное число: ${displayItelmen(entry.plural, state)}`);
+        }
+        if (entry.common_number) {
+            items.push(`общее число: ${displayItelmen(entry.common_number, state)}`);
+        }
+
+        if (!items.length) {
+            return "";
+        }
+
+        return `
+            <div class="meta-list">
+                ${items.map(item => `<span class="meta-chip">${escapeHtml(item)}</span>`).join("")}
+            </div>
+        `;
+    }
+
+    function renderLinks(entry, state) {
+        if (!entry.see_also.length) {
+            return "";
+        }
+
+        return `
+            <div class="links-row">
+                <strong>См.:</strong>
+                ${entry.see_also.map(word => `<a class="link-tag" href="${createLinkedSearchUrl(word, state)}" target="_blank" rel="noopener noreferrer">${escapeHtml(displayItelmen(word, state))}</a>`).join("")}
+            </div>
+        `;
+    }
+
+    function createLinkedSearchUrl(word, state) {
+        const params = new URLSearchParams();
+        params.set("q", word);
+        params.set("languages", "itelmen");
+        params.set("domains", "forms");
+        if (state.output_script === "latin") {
+            params.set("output_script", "latin");
+        }
+        return `${window.location.pathname}?${params.toString()}`;
+    }
+
+    function buildPaginationModel(currentPage, totalPages) {
+        const pages = new Set([1, totalPages, currentPage - 1, currentPage, currentPage + 1]);
+        if (currentPage <= 3) {
+            pages.add(2);
+            pages.add(3);
+        }
+        if (currentPage >= totalPages - 2) {
+            pages.add(totalPages - 1);
+            pages.add(totalPages - 2);
+        }
+
+        const validPages = Array.from(pages)
+            .filter(page => page >= 1 && page <= totalPages)
+            .sort((a, b) => a - b);
+
+        const items = [];
+        for (const page of validPages) {
+            const previous = items[items.length - 1];
+            if (previous && page - previous > 1) {
+                items.push("dots");
+            }
+            items.push(page);
+        }
+        return items;
+    }
+
+    function renderPagination(payload, state) {
+        const container = document.getElementById("pagination");
+        const totalPages = payload.total_pages || 1;
+        const currentPage = payload.page || 1;
+
+        if (totalPages <= 1) {
+            container.hidden = true;
+            container.innerHTML = "";
+            return;
+        }
+
+        const items = buildPaginationModel(currentPage, totalPages);
+        container.hidden = false;
+        container.innerHTML = `
+            <button class="page-button" type="button" data-page="${currentPage - 1}" ${currentPage <= 1 ? "disabled" : ""}>Назад</button>
+            ${items.map(item => {
+                if (item === "dots") {
+                    return `<span class="page-dots">…</span>`;
+                }
+                const activeClass = item === currentPage ? " active" : "";
+                return `<button class="page-button${activeClass}" type="button" data-page="${item}">${item}</button>`;
+            }).join("")}
+            <button class="page-button" type="button" data-page="${currentPage + 1}" ${currentPage >= totalPages ? "disabled" : ""}>Вперёд</button>
+        `;
+    }
+
+    function renderResults(payload, state) {
+        const entries = payload.entries || [];
+        const totalCount = payload.total_count || 0;
+        const shownCount = payload.shown_count || entries.length;
+        const limited = Boolean(payload.limited);
+        const container = document.getElementById("result");
+
+        if (!hasSearchCriteria(state)) {
+            renderIdleState(state);
+            return;
+        }
+
+        if (!entries.length) {
+            document.getElementById("pagination").hidden = true;
+            container.innerHTML = `<section class="panel empty-state">Ничего не найдено. Попробуйте убрать часть фильтров или отключить поиск целого слова.</section>`;
+            if (state.q) {
+                updateSummary("Ничего не найдено", `Запрос: <strong>${escapeHtml(state.q)}</strong>.`);
+            } else {
+                updateSummary("Ничего не найдено", `По выбранным параметрам ничего не найдено: ${buildActiveFilterText(state)}.`);
+            }
+            return;
+        }
+
+        const filterText = buildActiveFilterText(state);
+        if (state.q) {
+            const activeParts = state.parts_of_speech.length ? `части речи: ${state.parts_of_speech.join(", ")}` : "все части речи";
+            const activeLabels = state.labels.length ? `; пометы: ${state.labels.join(", ")}` : "";
+            updateSummary(
+                "Результаты поиска",
+                `Найдено всего: <strong>${totalCount}</strong>; показано на странице: <strong>${shownCount}</strong>; страница <strong>${payload.page}</strong> из <strong>${payload.total_pages}</strong>. Запрос: <strong>${escapeHtml(state.q)}</strong>; выдача: <strong>${state.output_script === "latin" ? "латиница" : "кириллица"}</strong>; ${activeParts}${activeLabels}.`
+            );
+        } else {
+            updateSummary(
+                "Результаты отбора",
+                `Найдено всего: <strong>${totalCount}</strong>; показано на странице: <strong>${shownCount}</strong>; страница <strong>${payload.page}</strong> из <strong>${payload.total_pages}</strong>; выдача: <strong>${state.output_script === "latin" ? "латиница" : "кириллица"}</strong>. ${filterText}.`
+            );
+        }
+
+        container.innerHTML = entries.map(entry => `
+            <article class="panel entry-card">
+                <div class="entry-header">
+                    <h3 class="entry-word">${escapeHtml(displayItelmen(entry.word, state))}</h3>
+                    ${entry.part_of_speech ? `<span class="entry-part">${escapeHtml(entry.part_of_speech)}</span>` : ""}
+                </div>
+                <p class="entry-translation">${escapeHtml(entry.translation || "Толкование не указано")}</p>
+                ${renderMeta(entry, state)}
+                ${renderLinks(entry, state)}
+            </article>
+        `).join("");
+        renderPagination(payload, state);
+    }
+
+    function buildRequestUrl(state) {
+        const params = new URLSearchParams();
+        params.set("q", state.q);
+        params.set("languages", state.languages.join(","));
+        params.set("domains", state.domains.join(","));
+        if (state.parts_of_speech.length) {
+            params.set("parts_of_speech", state.parts_of_speech.join(","));
+        }
+        if (state.labels.length) {
+            params.set("labels", state.labels.join(","));
+        }
+        params.set("whole_word", state.whole_word ? "1" : "0");
+        params.set("ignore_diacritics", state.ignore_diacritics ? "1" : "0");
+        params.set("ignore_case", state.ignore_case ? "1" : "0");
+        params.set("page", String(state.page || 1));
+        return `/search?${params.toString()}`;
+    }
+
+    function runSearch(options = {}) {
+        const { allowFilterOnly = false, page = null } = options;
+        const state = readState();
+        if (page !== null) {
+            state.page = page;
+        }
+        updateUrl(state);
+        const filterOnlyMode = !state.q && hasActiveFilters(state);
+
+        if (!state.q && !filterOnlyMode) {
+            renderIdleState(state);
+            return;
+        }
+
+        if (filterOnlyMode && !allowFilterOnly) {
+            renderIdleState(state);
+            return;
+        }
+
+        fetch(buildRequestUrl(state))
             .then(response => response.json())
             .then(data => {
-                let resultDiv = document.getElementById("result");
-                resultDiv.innerHTML = Object.keys(data).length
-                    ? Object.entries(data).map(([word, translation]) => `<p><strong>${word}</strong> - ${translation}</p>`).join("")
-                    : "<p><strong>Не найдено</strong></p>";
+                lastPayload = data;
+                renderResults(data, state);
+            })
+            .catch(() => {
+                lastPayload = null;
+                document.getElementById("result").innerHTML = `<section class="panel empty-state">Не удалось выполнить поиск.</section>`;
+                updateSummary("Ошибка", "Запрос не удалось выполнить.");
             });
     }
 
-    document.getElementById("search").addEventListener("input", () => search(false));
-    document.getElementById("direction").addEventListener("change", () => search(false));
+    function scheduleSearch() {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => runSearch({ page: 1 }), 180);
+    }
 
-    document.getElementById("search").addEventListener("keydown", function(e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            search(true);  // включаем fuzzy поиск
-        }
+    function resetFilters() {
+        applyState({
+            q: document.getElementById("search").value.trim(),
+            languages: [...DEFAULTS.languages],
+            domains: [...DEFAULTS.domains],
+            parts_of_speech: [],
+            labels: [],
+            whole_word: DEFAULTS.whole_word,
+            ignore_diacritics: DEFAULTS.ignore_diacritics,
+            ignore_case: DEFAULTS.ignore_case,
+            output_script: readState().output_script,
+        });
+        runSearch({ page: 1 });
+    }
+
+    document.getElementById("search-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        runSearch({ allowFilterOnly: true, page: 1 });
     });
 
-    document.querySelectorAll(".key").forEach(key => {
-        key.addEventListener("click", function() {
-            let searchBox = document.getElementById("search");
-            searchBox.focus();
-            let start = searchBox.selectionStart;
-            let end = searchBox.selectionEnd;
-            let char = this.textContent;
-            searchBox.value = searchBox.value.substring(0, start) + char + searchBox.value.substring(end);
-            searchBox.selectionStart = searchBox.selectionEnd = start + char.length;
-            searchBox.dispatchEvent(new Event("input"));
+    document.getElementById("search").addEventListener("input", scheduleSearch);
+    document.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        input.addEventListener("change", function() {
+            const state = readState();
+            if (state.q) {
+                runSearch({ page: 1 });
+                return;
+            }
+            renderIdleState(state);
+            updateUrl(state);
         });
     });
+    document.getElementById("clear-filters").addEventListener("click", resetFilters);
+    document.getElementById("filter-only-search").addEventListener("click", function() {
+        runSearch({ allowFilterOnly: true, page: 1 });
+    });
+
+    document.getElementById("keyboard-toggle").addEventListener("click", function() {
+        const keyboard = document.getElementById("keyboard");
+        keyboard.style.display = (keyboard.style.display === "block") ? "none" : "block";
+    });
+
+    document.querySelectorAll(".key").forEach(button => {
+        button.addEventListener("click", function() {
+            const searchBox = document.getElementById("search");
+            const start = searchBox.selectionStart;
+            const end = searchBox.selectionEnd;
+            const value = this.textContent;
+            searchBox.focus();
+            searchBox.value = searchBox.value.substring(0, start) + value + searchBox.value.substring(end);
+            searchBox.selectionStart = searchBox.selectionEnd = start + value.length;
+            scheduleSearch();
+        });
+    });
+
+    document.querySelectorAll('input[name="output_script"]').forEach(input => {
+        input.addEventListener("change", function() {
+            const state = readState();
+            state.page = lastPayload?.page || stateFromUrl().page || 1;
+            updateUrl(state);
+            if (lastPayload && hasSearchCriteria(state)) {
+                renderResults(lastPayload, state);
+                return;
+            }
+            renderIdleState(state);
+        });
+    });
+
+    document.getElementById("pagination").addEventListener("click", function(event) {
+        const button = event.target.closest(".page-button");
+        if (!button || button.disabled) {
+            return;
+        }
+        const page = Number(button.dataset.page);
+        if (!page) {
+            return;
+        }
+        runSearch({ allowFilterOnly: true, page });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    applyState(stateFromUrl());
+    const initialState = readState();
+    if (hasSearchCriteria(initialState)) {
+        runSearch({ allowFilterOnly: true, page: initialState.page || 1 });
+    } else {
+        renderIdleState(initialState);
+    }
 </script>
 
 {% endblock %}
